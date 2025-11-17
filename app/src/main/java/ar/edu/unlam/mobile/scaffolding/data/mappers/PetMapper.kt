@@ -20,6 +20,8 @@ fun PetDto.toDomain(): PetDomain =
         imageUrl = this.imageUrl,
         phoneNumber = this.phoneNumber,
         ownerId = this.ownerId,
+        timestamp = this.timestamp
+
     )
 
 /**
@@ -39,4 +41,6 @@ fun PetDomain.toDto(): PetDto =
         imageUrl = this.imageUrl,
         phoneNumber = this.phoneNumber,
         ownerId = this.ownerId,
+        timestamp = this.timestamp
+
     )

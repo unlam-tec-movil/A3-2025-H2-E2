@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icon)
+    implementation (libs.accompanist.systemuicontroller)
 
     // 👇 Dependencia directa para ui-text
     implementation("androidx.compose.ui:ui-text:1.7.0")

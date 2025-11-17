@@ -6,8 +6,10 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.drawable.BitmapDrawable
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
+import ar.edu.unlam.mobile.scaffolding.ui.theme.ColorTwo
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -65,7 +67,7 @@ fun createCircularMarkerBitmap(avatarBitmap: Bitmap): Bitmap {
     // 1) dibujar borde fucsia
     val borderPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = android.graphics.Color.MAGENTA
+            color = ColorTwo.toArgb()
             style = Paint.Style.FILL
         }
     canvas.drawCircle(size / 2f, size / 2f, size / 2f, borderPaint)

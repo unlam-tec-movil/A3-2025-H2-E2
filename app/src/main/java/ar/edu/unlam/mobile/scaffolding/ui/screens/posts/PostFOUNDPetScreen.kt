@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -23,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +58,7 @@ fun PostFoundPet(
     var selectedGender by remember { mutableStateOf<Gender?>(null) }
     var selectedType by remember { mutableStateOf<Type?>(null) }
     var photoUri by remember { mutableStateOf<Uri?>(null) }
+    val isSaving by postViewModel.isSaving.collectAsState()
 
     Box(
         modifier =
@@ -89,6 +92,8 @@ fun PostFoundPet(
                                     gender = selectedGender!!,
                                     type = selectedType!!,
                                     status = Status.FOUND,
+                                    timestamp = System.currentTimeMillis()
+
                                 )
 
                             Log.d("PostScreen", "Datos de mascota listos: $pet")
@@ -170,7 +175,20 @@ fun PostFoundPet(
                 )
             }
         }
+        if (isSaving) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)), // overlay semitransparente
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = ColorTwo
+                )
+            }
+        }
     }
+
 }
 
 @Composable

@@ -138,10 +138,9 @@ fun FeedScreen(
         }
 
         PublishButton(
-            modifier =
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 130.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 75.dp, end = 24.dp),
             navController = navController,
             viewModel = postViewModel,
         )
@@ -173,7 +172,7 @@ fun PetFeed(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(start = 8.dp, end = 8.dp, bottom = 100.dp),
+                .padding(start = 8.dp, end = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
