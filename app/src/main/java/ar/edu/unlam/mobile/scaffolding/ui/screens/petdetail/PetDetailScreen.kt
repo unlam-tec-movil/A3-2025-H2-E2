@@ -133,15 +133,25 @@ fun PetDetailScreen(
                                                 navController.popBackStack()
                                             }
                                         }
-                                    ) { Text("Eliminar") }
+                                    ) {
+                                        Text(
+                                            text= "Eliminar",
+                                            color= ColorTwo
+                                        )
+                                    }
                                 },
 
                                 dismissButton = {
                                     TextButton(onClick = { showDeleteDialog = false }) {
-                                        Text("Cancelar")
+                                        Text(
+                                            text= "Cancelar",
+                                            color= ColorTwo
+                                        )
                                     }
                                 }
                             )
+
+
                         }
 
                     }
@@ -154,39 +164,7 @@ fun PetDetailScreen(
         },
     ) { innerPadding ->
 
-        if (showDeleteDialog) {
-            AlertDialog(
-                onDismissRequest = { showDeleteDialog = false },
-                title = { Text("¿Seguro quieres eliminar este post?") },
-                text = { Text("Esta acción no se puede deshacer.") },
 
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            showDeleteDialog = false
-                            viewModel.deletePet(petId) {
-                                showDeletedMessage = true
-                                navController.popBackStack()
-                            }
-                        }
-                    ) {
-                        Text(
-                            text= "Eliminar",
-                            color= ColorTwo
-                        )
-                    }
-                },
-
-                dismissButton = {
-                    TextButton(onClick = { showDeleteDialog = false }) {
-                        Text(
-                            text= "Cancelar",
-                            color= ColorTwo
-                        )
-                    }
-                }
-            )
-        }
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -395,7 +373,7 @@ private fun launchWhatsApp(
     try {
         val cleanNumber = "549" + phoneNumber.replace(Regex("[^0-9]"), "")
 
-        val message = "Hola, vi tu publicación sobre $petName en la app."
+        val message = "¡Hola!, vi tu publicación en PetFinder."
         val encodedMessage = Uri.encode(message)
 
         val url = "https://api.whatsapp.com/send?phone=$cleanNumber&text=$encodedMessage"
