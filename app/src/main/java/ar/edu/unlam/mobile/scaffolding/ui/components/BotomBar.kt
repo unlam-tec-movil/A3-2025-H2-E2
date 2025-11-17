@@ -72,7 +72,7 @@ fun BottomBar(
 //                .offset(y = (-8).dp)
 //                .shadow(10.dp, RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp)),
         color = Color.Transparent,
-        shape = RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp),
+//        shape = RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp),
     ) {
         Box(
             modifier =
