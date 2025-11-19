@@ -169,10 +169,11 @@ class SearchViewModel
                     .getLocationUpdates()
                     .onEach { userLocation ->
                         // Calcular la declinación magnética para esta ubicación
-                        val declination = calculateMagneticDeclination(
-                            userLocation.latitude,
-                            userLocation.longitude,
-                        )
+                        val declination =
+                            calculateMagneticDeclination(
+                                userLocation.latitude,
+                                userLocation.longitude,
+                            )
 
                         // Por cada nueva ubicación, actualizar el estado
                         _uiState.update {
@@ -251,12 +252,13 @@ class SearchViewModel
             longitude: Double,
         ): Float {
             // GeomagneticField calcula el campo magnético terrestre para una ubicación
-            val geomagneticField = GeomagneticField(
-                latitude.toFloat(),
-                longitude.toFloat(),
-                0f, // Altitud en metros (usamos 0 como aproximación)
-                System.currentTimeMillis(), // Tiempo actual
-            )
+            val geomagneticField =
+                GeomagneticField(
+                    latitude.toFloat(),
+                    longitude.toFloat(),
+                    0f, // Altitud en metros (usamos 0 como aproximación)
+                    System.currentTimeMillis(), // Tiempo actual
+                )
 
             // getDeclination() devuelve la declinación en grados
             // Positivo = Norte Magnético está al Este del Norte Verdadero
