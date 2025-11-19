@@ -6,13 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -22,8 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +30,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ar.edu.unlam.mobile.scaffolding.ui.screens.map.MAP_ROUTE
+import ar.edu.unlam.mobile.scaffolding.ui.theme.ColorTwo
+import ar.edu.unlam.mobile.scaffolding.ui.theme.Pink80
 
 // Única definición de BottomNavItem
 data class BottomNavItem(
@@ -50,14 +49,14 @@ fun BottomBar(
     val navBackStackEntry by controller.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val gradientBrush =
-        Brush.verticalGradient(
-            colors =
-                listOf(
-                    Color(0xFFF3AFC9), // rosa más fuerte (abajo)
-                    Color(0xFFFCE3ED), // más claro (arriba)
-                ),
-        )
+//    val gradientBrush =
+//        Brush.verticalGradient(
+//            colors =
+//                listOf(
+//                    Color(0xFFF3AFC9), // rosa más fuerte (abajo)
+//                    Color(0xFFFCE3ED), // más claro (arriba)
+//                ),
+//        )
 
     val accent = Color(0xFFD81B60)
     val inactive = Color(0xFF8E8E8E)
@@ -65,16 +64,16 @@ fun BottomBar(
     Surface(
         modifier =
             modifier
-                .zIndex(1f)
-                .offset(y = (-8).dp)
-                .shadow(10.dp, RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp)),
+                .zIndex(1f),
+//                .offset(y = (-8).dp)
+//                .shadow(10.dp, RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp)),
         color = Color.Transparent,
-        shape = RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp),
+//        shape = RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp),
     ) {
         Box(
             modifier =
                 Modifier
-                    .background(brush = gradientBrush)
+                    .background(color = ColorTwo)
                     .fillMaxWidth()
                     .height(72.dp),
             contentAlignment = Alignment.Center,
@@ -85,7 +84,7 @@ fun BottomBar(
             ) {
                 val items =
                     listOf(
-                        BottomNavItem("feed", "feed", Icons.Default.Home, "Feed"),
+                        BottomNavItem("feed", "feed", Icons.Default.Pets, "Feed"),
                         BottomNavItem(MAP_ROUTE, MAP_ROUTE, Icons.Default.Map, "Map"),
                         BottomNavItem("user/{id}", "user/usuario", Icons.Default.Person, "User"),
                     )
@@ -93,7 +92,7 @@ fun BottomBar(
                 items.forEach { item ->
                     val selected =
                         currentRoute?.contains(item.matchRoute.substringBefore("/")) == true
-                    val iconColor by animateColorAsState(if (selected) Color.White else inactive)
+                    val iconColor by animateColorAsState(if (selected) Color.White else Pink80)
                     val backgroundColor by animateColorAsState(
                         if (selected) accent else Color.Transparent,
                     )
@@ -111,7 +110,7 @@ fun BottomBar(
                                 modifier =
                                     Modifier
                                         .background(
-                                            color = backgroundColor,
+                                            color = Color.Transparent,
                                             shape = RoundedCornerShape(14.dp),
                                         ).padding(paddingAnim),
                             ) {

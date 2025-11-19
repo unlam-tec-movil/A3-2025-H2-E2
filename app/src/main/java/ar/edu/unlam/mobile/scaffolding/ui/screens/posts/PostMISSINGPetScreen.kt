@@ -31,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -44,6 +45,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,6 +85,7 @@ fun PostMissingPetScreen(
     var selectedGender by remember { mutableStateOf<Gender?>(null) }
     var selectedType by remember { mutableStateOf<Type?>(null) }
     var photoUri by remember { mutableStateOf<Uri?>(null) }
+    val isSaving by postViewModel.isSaving.collectAsState()
 
     Box(
         modifier =
@@ -115,6 +118,7 @@ fun PostMissingPetScreen(
                                     locality = locality,
                                     gender = selectedGender!!,
                                     type = selectedType!!,
+                                    timestamp = System.currentTimeMillis(),
                                 )
 
                             Log.d("PostScreen", "Datos de mascota listos: $pet")
@@ -193,6 +197,20 @@ fun PostMissingPetScreen(
                 PetTypeSelector(
                     selectedType = selectedType,
                     onTypeSelected = { selectedType = it },
+                )
+            }
+        }
+        if (isSaving) {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f)),
+                // overlay semitransparente
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(
+                    color = ColorTwo,
                 )
             }
         }

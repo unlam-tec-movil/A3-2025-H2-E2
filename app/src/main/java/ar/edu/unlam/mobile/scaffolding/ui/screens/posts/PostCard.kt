@@ -1,6 +1,7 @@
 package ar.edu.unlam.mobile.scaffolding.ui.screens.posts
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.edu.unlam.mobile.scaffolding.domain.model.Pet
+import ar.edu.unlam.mobile.scaffolding.util.tiempoDePublicacionDelPost
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
@@ -70,12 +72,25 @@ fun PostCard(
                         .padding(horizontal = 8.dp),
                 horizontalAlignment = Alignment.Start,
             ) {
-                Text(
-                    text = pet.name,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = pet.name,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = tiempoDePublicacionDelPost(pet.timestamp),
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                    )
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(top = 2.dp),

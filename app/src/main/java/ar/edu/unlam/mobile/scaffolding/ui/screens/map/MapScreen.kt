@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import ar.edu.unlam.mobile.scaffolding.ui.components.ShowPermissionDenied
 import ar.edu.unlam.mobile.scaffolding.ui.utils.map.loadMarkerDescriptorFromUrl
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -49,7 +50,10 @@ const val MAP_ROUTE = "map"
  */
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
+fun MapScreen(
+    viewModel: MapViewModel = hiltViewModel(),
+    navController: NavController,
+) {
     val context = LocalContext.current
     val markerIcons = remember { mutableStateMapOf<String, BitmapDescriptor>() }
 
@@ -150,6 +154,10 @@ fun MapScreen(viewModel: MapViewModel = hiltViewModel()) {
                     Marker(
                         state = MarkerState(position),
                         icon = markerIcons[pet.id],
+                        onClick = {
+                            navController.navigate("pet_detail/${pet.id}")
+                            true // al devolver true evita q la cámara haga zoom automático
+                        },
                         anchor = Offset(0.5f, 0.5f),
                         title = pet.name.ifBlank { "Mascota" },
                         snippet = "${pet.type} - ${pet.status}",

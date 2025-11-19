@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -25,9 +24,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -38,11 +37,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,12 +58,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import ar.edu.unlam.mobile.scaffolding.R
 import ar.edu.unlam.mobile.scaffolding.ui.screens.search.SEARCH_ROUTE
+import ar.edu.unlam.mobile.scaffolding.ui.theme.ColorTwo
+import ar.edu.unlam.mobile.scaffolding.util.tiempoDePublicacionDelPost
 import coil.compose.AsyncImage
 
 const val PET_DETAIL_ROUTE = "pet_detail"
@@ -80,8 +88,12 @@ fun PetDetailScreen(
 
     val pet by viewModel.pet.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(pageCount = { 1 })
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showDeletedMessage by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = { },
@@ -95,19 +107,48 @@ fun PetDetailScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = onEdit) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Editar",
-                            tint = Color.White,
-                        )
-                    }
-                    IconButton(onClick = onDelete) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Eliminar",
-                            tint = Color.White,
-                        )
+                    val currentUserId = viewModel.currentUserId
+                    if (pet != null && pet!!.ownerId == currentUserId) {
+                        IconButton(
+                            onClick = { showDeleteDialog = true },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Eliminar",
+                                tint = Color.White,
+                            )
+                        }
+                        if (showDeleteDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showDeleteDialog = false },
+                                title = { Text("¿Seguro quieres eliminar este post?") },
+                                text = { Text("Esta acción no se puede deshacer.") },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            showDeleteDialog = false
+                                            viewModel.deletePet(petId) {
+                                                showDeletedMessage = true
+                                                navController.popBackStack()
+                                            }
+                                        },
+                                    ) {
+                                        Text(
+                                            text = "Eliminar",
+                                            color = ColorTwo,
+                                        )
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(onClick = { showDeleteDialog = false }) {
+                                        Text(
+                                            text = "Cancelar",
+                                            color = ColorTwo,
+                                        )
+                                    }
+                                },
+                            )
+                        }
                     }
                 },
                 colors =
@@ -117,6 +158,7 @@ fun PetDetailScreen(
             )
         },
     ) { innerPadding ->
+
         Column(
             modifier =
                 modifier
@@ -131,41 +173,35 @@ fun PetDetailScreen(
                         .padding(top = innerPadding.calculateTopPadding() * 0),
                 contentAlignment = Alignment.BottomCenter,
             ) {
-                HorizontalPager(
-                    state = pagerState,
+                AsyncImage(
+                    model = pet?.imageUrl,
+                    contentDescription = "Pet Image",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
-                ) {
-                    AsyncImage(
-                        model = pet?.imageUrl,
-                        contentDescription = "Pet Image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
+                )
+            }
 
-                Row(
-                    Modifier
-                        .height(20.dp)
-                        .padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    repeat(pagerState.pageCount) { iteration ->
-                        val color =
-                            if (pagerState.currentPage == iteration) {
-                                Color.White
-                            } else {
-                                Color.White.copy(
-                                    alpha = 0.5f,
-                                )
-                            }
-                        Box(
-                            modifier =
-                                Modifier
-                                    .size(8.dp)
-                                    .clip(CircleShape)
-                                    .background(color),
-                        )
-                    }
+            Row(
+                Modifier
+                    .height(20.dp)
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                repeat(pagerState.pageCount) { iteration ->
+                    val color =
+                        if (pagerState.currentPage == iteration) {
+                            Color.White
+                        } else {
+                            Color.White.copy(alpha = 0.5f)
+                        }
+
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(color),
+                    )
                 }
             }
 
@@ -185,10 +221,13 @@ fun PetDetailScreen(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f),
                     )
+
                     Text(
-                        text = "Hace 2 dia(s)",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        text = tiempoDePublicacionDelPost(pet?.timestamp ?: 0L),
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray,
+                        fontSize = 20.sp,
                     )
                 }
 
@@ -201,14 +240,14 @@ fun PetDetailScreen(
                     Icon(
                         imageVector = Icons.Default.LocationOn,
                         contentDescription = "Ubicación",
+                        tint = Color.Gray,
                         modifier = Modifier.size(20.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = pet?.locality ?: "Buenos Aires",
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = Color.Gray,
                     )
                 }
 
@@ -220,11 +259,17 @@ fun PetDetailScreen(
                         value = pet?.seenAt ?: "Dirección 1000",
                     )
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                    DetailRow(label = "Perdido desde:", value = "03/09/2025")
+
+                    DetailRow(
+                        label = "Sexo:",
+                        value = pet?.gender?.label ?: "Unknown",
+                    )
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                    DetailRow(label = "Sexo:", value = pet?.gender?.label ?: "Unknown")
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                    DetailRow(label = "Teléfono:", value = pet?.phoneNumber ?: "11 1234 5678")
+
+                    DetailRow(
+                        label = "Teléfono:",
+                        value = pet?.phoneNumber ?: "11 1234 5678",
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -252,15 +297,9 @@ fun PetDetailScreen(
                                 contentColor = Color.White,
                             ),
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Explore,
-                            contentDescription = "Buscar",
-                        )
+                        Icon(imageVector = Icons.Default.Explore, contentDescription = "Buscar")
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            "Buscar en mapa",
-                            fontWeight = FontWeight.Bold,
-                        )
+                        Text("Buscar en mapa", fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -333,7 +372,7 @@ private fun launchWhatsApp(
     try {
         val cleanNumber = "549" + phoneNumber.replace(Regex("[^0-9]"), "")
 
-        val message = "Hola, vi tu publicación sobre $petName en la app."
+        val message = "¡Hola!, vi tu publicación en PetFinder."
         val encodedMessage = Uri.encode(message)
 
         val url = "https://api.whatsapp.com/send?phone=$cleanNumber&text=$encodedMessage"
