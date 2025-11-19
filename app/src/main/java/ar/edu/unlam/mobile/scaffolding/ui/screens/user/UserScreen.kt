@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,13 +35,16 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import ar.edu.unlam.mobile.scaffolding.ui.components.FloatingParticlesBackgroundAnimated
+import ar.edu.unlam.mobile.scaffolding.ui.screens.feed.CirXD
+import ar.edu.unlam.mobile.scaffolding.ui.theme.ColorTwo
+import ar.edu.unlam.mobile.scaffolding.ui.theme.PetFinderFont
+import ar.edu.unlam.mobile.scaffolding.ui.theme.SoftGray
 
 @Composable
 fun UserScreen(
@@ -51,13 +55,27 @@ fun UserScreen(
 ) {
     val topbarHeightDp = 68.dp
     val topbarExclusionPx = with(LocalDensity.current) { topbarHeightDp.toPx() }
-
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF2F3F5)),
+                .background(SoftGray),
     ) {
+        CirXD(
+            modifier =
+                Modifier
+                    .padding(top = 16.dp)
+                    .offset(y = (-450).dp),
+        )
+        Text(
+            text = "Usuario",
+            fontFamily = PetFinderFont,
+            color = ColorTwo,
+            fontSize = 28.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
         FloatingParticlesBackgroundAnimated(
             particleCount = 24,
             excludeTopPx = topbarExclusionPx,
@@ -68,9 +86,8 @@ fun UserScreen(
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
-            CurvedTopBar(title = "Configuración")
-
-            Spacer(modifier = Modifier.height(70.dp))
+//            CurvedTopBar(title = "Configuración")
+            Spacer(modifier = Modifier.height(100.dp))
 
             Column(
                 modifier =
@@ -84,7 +101,7 @@ fun UserScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(30.dp),
                 ) {
-                    ItemCard("Detalles personales", onClick = onDetallesClick)
+//                    ItemCard("Detalles personales", onClick = onDetallesClick)
                     ItemCard("Mis mascotas", onClick = onMascotasClick)
                     ItemCard("Mis reportes", onClick = onReportesClick)
                 }
@@ -158,7 +175,7 @@ fun CurvedTopBar(
                 },
         contentAlignment = Alignment.Center,
     ) {
-        Text(title, color = Color(0xFFD81B60), fontWeight = FontWeight.Bold, fontSize = 24.sp)
+        Text(title, color = ColorTwo, fontFamily = PetFinderFont, fontSize = 24.sp)
     }
 }
 
@@ -205,11 +222,10 @@ fun LogoutButton(onClick: () -> Unit) {
                 .fillMaxWidth()
                 .height(52.dp),
         shape = RoundedCornerShape(28.dp),
-        border = BorderStroke(1.5.dp, Color(0xFFD81B60)),
+        border = BorderStroke(1.5.dp, ColorTwo),
         colors =
             ButtonDefaults.outlinedButtonColors(
-                containerColor = Color.White,
-                contentColor = Color(0xFFD81B60),
+                contentColor = ColorTwo,
             ),
     ) {
         Row(
@@ -222,7 +238,7 @@ fun LogoutButton(onClick: () -> Unit) {
             Icon(
                 imageVector = Icons.Outlined.Logout,
                 contentDescription = null,
-                tint = Color(0xFFD81B60),
+                tint = ColorTwo,
                 modifier =
                     Modifier
                         .size(20.dp)
@@ -232,7 +248,7 @@ fun LogoutButton(onClick: () -> Unit) {
                 Text(
                     "Log out",
                     fontSize = 16.sp,
-                    color = Color(0xFFD81B60),
+                    color = ColorTwo,
                     textAlign = TextAlign.Center,
                 )
             }

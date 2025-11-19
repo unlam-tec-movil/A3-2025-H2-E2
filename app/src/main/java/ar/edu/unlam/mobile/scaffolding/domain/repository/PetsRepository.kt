@@ -27,4 +27,9 @@ interface PetsRepository {
      * Guarda una mascota.
      */
     suspend fun savePet(pet: Pet): String
+
+    /**
+     * Borra una mascota por su ID.
+     */
+    suspend fun deletePet(petId: String)
 }

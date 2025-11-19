@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +26,7 @@ import androidx.navigation.navArgument
 import ar.edu.unlam.mobile.scaffolding.ui.components.BottomBar
 import ar.edu.unlam.mobile.scaffolding.ui.screens.LoginScreen
 import ar.edu.unlam.mobile.scaffolding.ui.screens.RegisterScreen
+import ar.edu.unlam.mobile.scaffolding.ui.screens.StatusBar
 import ar.edu.unlam.mobile.scaffolding.ui.screens.feed.FeedScreen
 import ar.edu.unlam.mobile.scaffolding.ui.screens.map.MapPostScreen
 import ar.edu.unlam.mobile.scaffolding.ui.screens.map.MapScreen
@@ -36,6 +38,7 @@ import ar.edu.unlam.mobile.scaffolding.ui.screens.search.SearchScreen
 import ar.edu.unlam.mobile.scaffolding.ui.screens.user.UserScreen
 import ar.edu.unlam.mobile.scaffolding.ui.screens.user.editProfile.EditProfile
 import ar.edu.unlam.mobile.scaffolding.ui.screens.userPosts.MyPetsScreen
+import ar.edu.unlam.mobile.scaffolding.ui.screens.userPosts.MyReportsScreen
 import ar.edu.unlam.mobile.scaffolding.ui.theme.ScaffoldingV2Theme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -50,6 +53,7 @@ class MainActivity :
         FirebaseApp.initializeApp(this)
         super.onCreate(savedInstanceState)
         setContent {
+            StatusBar()
             ScaffoldingV2Theme {
                 AppNavHost()
             }
@@ -79,7 +83,7 @@ class MainActivity :
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(parentNavController: NavController) {
     val controller = rememberNavController()
     val snackBarHostState = remember { SnackbarHostState() }
     val postViewModel = hiltViewModel<PostViewModel>()
@@ -125,7 +129,7 @@ fun MainScreen() {
             }
 
             composable("map") {
-                MapScreen()
+                MapScreen(navController = controller)
             }
 
             // Ruta para detalles de mascota
@@ -156,8 +160,11 @@ fun MainScreen() {
                 EditProfile(controller)
             }
 
-            composable("misposts") {
-                MyPetsScreen()
+            composable("misMascotas") {
+                MyPetsScreen(navController = controller)
+            }
+            composable("misReportes") {
+                MyReportsScreen(navController = controller)
             }
 
             composable(
@@ -167,27 +174,16 @@ fun MainScreen() {
                 val id = backStackEntry.arguments?.getString("id") ?: ""
                 UserScreen(
                     onDetallesClick = { /* si necesitás navegar a detalles personales */ },
-                    onMascotasClick = { controller.navigate("mis_mascotas/$id") },
-                    onReportesClick = { controller.navigate("mis_reportes/$id") },
+                    onMascotasClick = { controller.navigate("misMascotas") },
+                    onReportesClick = { controller.navigate("misReportes") },
                     onLogoutClick = {
                         FirebaseAuth.getInstance().signOut()
-                        controller.navigate("login") {
-                            popUpTo("main") { inclusive = true }
+                        parentNavController.navigate("login") {
+                            popUpTo(0)
                         }
                     },
                 )
             }
-
-            // Opcional: rutas destino para mascotas/reportes
-            composable(
-                "mis_mascotas/{userId}",
-                arguments = listOf(navArgument("userId") { type = NavType.StringType }),
-            ) { /* MisMascotasScreen(controller) */ }
-
-            composable(
-                "mis_reportes/{userId}",
-                arguments = listOf(navArgument("userId") { type = NavType.StringType }),
-            ) { /* MisReportesScreen(controller) */ }
         }
     }
 }
@@ -226,7 +222,7 @@ fun AppNavHost() {
         }
 
         composable("main") {
-            MainScreen()
+            MainScreen(parentNavController = nav)
         }
     }
 }
