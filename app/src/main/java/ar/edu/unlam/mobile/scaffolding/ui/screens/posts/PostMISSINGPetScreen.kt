@@ -118,7 +118,7 @@ fun PostMissingPetScreen(
                                     locality = locality,
                                     gender = selectedGender!!,
                                     type = selectedType!!,
-                                    timestamp = System.currentTimeMillis()
+                                    timestamp = System.currentTimeMillis(),
                                 )
 
                             Log.d("PostScreen", "Datos de mascota listos: $pet")
@@ -138,9 +138,7 @@ fun PostMissingPetScreen(
                         }
                     },
                 )
-
             },
-
             containerColor = Color.Transparent,
         ) { innerPadding ->
             Column(
@@ -201,22 +199,22 @@ fun PostMissingPetScreen(
                     onTypeSelected = { selectedType = it },
                 )
             }
-
         }
         if (isSaving) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f)), // overlay semitransparente
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f)),
+                // overlay semitransparente
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator(
-                    color = ColorTwo
+                    color = ColorTwo,
                 )
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

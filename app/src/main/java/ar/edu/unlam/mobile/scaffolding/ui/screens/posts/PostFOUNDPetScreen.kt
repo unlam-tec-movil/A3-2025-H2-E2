@@ -92,8 +92,7 @@ fun PostFoundPet(
                                     gender = selectedGender!!,
                                     type = selectedType!!,
                                     status = Status.FOUND,
-                                    timestamp = System.currentTimeMillis()
-
+                                    timestamp = System.currentTimeMillis(),
                                 )
 
                             Log.d("PostScreen", "Datos de mascota listos: $pet")
@@ -177,18 +176,19 @@ fun PostFoundPet(
         }
         if (isSaving) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f)), // overlay semitransparente
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f)),
+                // overlay semitransparente
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator(
-                    color = ColorTwo
+                    color = ColorTwo,
                 )
             }
         }
     }
-
 }
 
 @Composable

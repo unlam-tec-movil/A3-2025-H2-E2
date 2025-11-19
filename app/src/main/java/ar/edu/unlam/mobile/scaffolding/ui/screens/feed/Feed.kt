@@ -138,9 +138,10 @@ fun FeedScreen(
         }
 
         PublishButton(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 75.dp, end = 24.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 75.dp, end = 24.dp),
             navController = navController,
             viewModel = postViewModel,
         )

@@ -326,7 +326,7 @@ fun LoginText(onBackClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = "¿Ya tienes una cuenta? ", color = Color.White)
-        TextButton(onClick = onBackClick)  {
+        TextButton(onClick = onBackClick) {
             Text(
                 text = "Inicia sesión aquí",
                 fontWeight = FontWeight.Bold,

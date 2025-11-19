@@ -47,7 +47,7 @@ fun MyReportsScreen(navController: NavController) {
                     pet = pet,
                     onClick = {
                         navController.navigate("pet_detail/${pet.id}")
-                    }
+                    },
                 )
             }
         }

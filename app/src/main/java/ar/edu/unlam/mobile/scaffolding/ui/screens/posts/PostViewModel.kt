@@ -72,8 +72,8 @@ class PostViewModel
         private val _selectedLongitude = MutableStateFlow<Double?>(null)
         val selectedLongitude = _selectedLongitude.asStateFlow()
 
-         // Estado para indicar si se está guardando el post
-         private val _isSaving = MutableStateFlow(false)
+        // Estado para indicar si se está guardando el post
+        private val _isSaving = MutableStateFlow(false)
         val isSaving: StateFlow<Boolean> = _isSaving
 
         fun setPostTipo(tipoPublicacion: TipoDePublicacion) {
@@ -168,7 +168,7 @@ class PostViewModel
         ) {
             viewModelScope.launch {
                 try {
-                    _isSaving.value = true  // activa el loading
+                    _isSaving.value = true // activa el loading
 
                     val user = _currentUser.value ?: return@launch
 
@@ -197,9 +197,9 @@ class PostViewModel
                     onSuccessMessage("Mascota registrada con éxito")
                 } catch (e: Exception) {
                     Log.e("PostViewModel", "Error guardando mascota: ${e.message}")
-                }  finally {
-                _isSaving.value = false  // desactiva el loading
-            }
+                } finally {
+                    _isSaving.value = false // desactiva el loading
+                }
             }
         }
 

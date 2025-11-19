@@ -70,6 +70,7 @@ import ar.edu.unlam.mobile.scaffolding.util.tiempoDePublicacionDelPost
 import coil.compose.AsyncImage
 
 const val PET_DETAIL_ROUTE = "pet_detail"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PetDetailScreen(
@@ -91,7 +92,6 @@ fun PetDetailScreen(
     var showDeletedMessage by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
-
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -110,7 +110,7 @@ fun PetDetailScreen(
                     val currentUserId = viewModel.currentUserId
                     if (pet != null && pet!!.ownerId == currentUserId) {
                         IconButton(
-                            onClick = { showDeleteDialog = true }
+                            onClick = { showDeleteDialog = true },
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
@@ -123,7 +123,6 @@ fun PetDetailScreen(
                                 onDismissRequest = { showDeleteDialog = false },
                                 title = { Text("¿Seguro quieres eliminar este post?") },
                                 text = { Text("Esta acción no se puede deshacer.") },
-
                                 confirmButton = {
                                     TextButton(
                                         onClick = {
@@ -132,50 +131,46 @@ fun PetDetailScreen(
                                                 showDeletedMessage = true
                                                 navController.popBackStack()
                                             }
-                                        }
+                                        },
                                     ) {
                                         Text(
-                                            text= "Eliminar",
-                                            color= ColorTwo
+                                            text = "Eliminar",
+                                            color = ColorTwo,
                                         )
                                     }
                                 },
-
                                 dismissButton = {
                                     TextButton(onClick = { showDeleteDialog = false }) {
                                         Text(
-                                            text= "Cancelar",
-                                            color= ColorTwo
+                                            text = "Cancelar",
+                                            color = ColorTwo,
                                         )
                                     }
-                                }
+                                },
                             )
-
-
                         }
-
                     }
-
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                ),
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent,
+                    ),
             )
         },
     ) { innerPadding ->
 
-
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
         ) {
-
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(top = innerPadding.calculateTopPadding() * 0),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .padding(top = innerPadding.calculateTopPadding() * 0),
                 contentAlignment = Alignment.BottomCenter,
             ) {
                 AsyncImage(
@@ -194,24 +189,28 @@ fun PetDetailScreen(
             ) {
                 repeat(pagerState.pageCount) { iteration ->
                     val color =
-                        if (pagerState.currentPage == iteration) Color.White
-                        else Color.White.copy(alpha = 0.5f)
+                        if (pagerState.currentPage == iteration) {
+                            Color.White
+                        } else {
+                            Color.White.copy(alpha = 0.5f)
+                        }
 
                     Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(color),
+                        modifier =
+                            Modifier
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(color),
                     )
                 }
             }
 
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 24.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 24.dp),
             ) {
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -292,10 +291,11 @@ fun PetDetailScreen(
                         onClick = { navController.navigate("$SEARCH_ROUTE/$petId") },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = buttonColor,
-                            contentColor = Color.White,
-                        ),
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = buttonColor,
+                                contentColor = Color.White,
+                            ),
                     ) {
                         Icon(imageVector = Icons.Default.Explore, contentDescription = "Buscar")
                         Spacer(modifier = Modifier.width(8.dp))
@@ -306,7 +306,6 @@ fun PetDetailScreen(
         }
     }
 }
-
 
 @Composable
 private fun DetailRow(

@@ -163,7 +163,7 @@ fun MainScreen(parentNavController: NavController) {
             composable("misMascotas") {
                 MyPetsScreen(navController = controller)
             }
-            composable("misReportes"){
+            composable("misReportes") {
                 MyReportsScreen(navController = controller)
             }
 
@@ -184,7 +184,6 @@ fun MainScreen(parentNavController: NavController) {
                     },
                 )
             }
-
         }
     }
 }

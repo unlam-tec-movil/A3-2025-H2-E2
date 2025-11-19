@@ -21,5 +21,5 @@ data class PetDto(
     val imageUrl: String = "",
     val phoneNumber: String = "",
     val ownerId: String = "",
-    val timestamp: Long = 0L
+    val timestamp: Long = 0L,
 )

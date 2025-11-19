@@ -73,18 +73,17 @@ class PetsRepositoryImpl
             return docRef.id
         }
 
-    override suspend fun deletePet(petId: String) {
-        Log.d("DeletePet", "Intentando eliminar $petId")
+        override suspend fun deletePet(petId: String) {
+            Log.d("DeletePet", "Intentando eliminar $petId")
 
-        db.collection("Pets").document(petId).delete()
-            .addOnSuccessListener {
-                Log.d("DeletePet", "Borrado OK")
-            }
-            .addOnFailureListener {
-                Log.e("DeletePet", "Error al borrar", it)
-            }
-            .await()
+            db
+                .collection("Pets")
+                .document(petId)
+                .delete()
+                .addOnSuccessListener {
+                    Log.d("DeletePet", "Borrado OK")
+                }.addOnFailureListener {
+                    Log.e("DeletePet", "Error al borrar", it)
+                }.await()
+        }
     }
-
-
-}

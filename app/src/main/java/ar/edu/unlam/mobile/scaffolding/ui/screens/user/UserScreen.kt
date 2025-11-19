@@ -73,7 +73,7 @@ fun UserScreen(
             color = ColorTwo,
             fontSize = 28.sp,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         FloatingParticlesBackgroundAnimated(

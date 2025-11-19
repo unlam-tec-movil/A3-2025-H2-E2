@@ -21,8 +21,8 @@ class PetDetailViewModel
         private val _pet = MutableStateFlow<Pet?>(null)
         val pet = _pet.asStateFlow()
 
-    val currentUserId: String? =
-        FirebaseAuth.getInstance().currentUser?.uid
+        val currentUserId: String? =
+            FirebaseAuth.getInstance().currentUser?.uid
 
         fun loadPet(petId: String) {
             viewModelScope.launch {
@@ -31,11 +31,14 @@ class PetDetailViewModel
                 }
             }
         }
-    fun deletePet(petId: String, onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            repository.deletePet(petId)
-            onSuccess()
+
+        fun deletePet(
+            petId: String,
+            onSuccess: () -> Unit,
+        ) {
+            viewModelScope.launch {
+                repository.deletePet(petId)
+                onSuccess()
+            }
         }
     }
-
-}

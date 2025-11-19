@@ -30,27 +30,26 @@ fun MyPetsScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(SoftGray),
     ) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 160.dp),
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(start = 8.dp, end = 8.dp, bottom = 100.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(
-            lostPosts,
-            key = { it.id },
-        ) { pet ->
-            PostCard(
-                pet = pet,
-                onClick = {
-                    navController.navigate("pet_detail/${pet.id}")
-                }
-            )
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(start = 8.dp, end = 8.dp, bottom = 100.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(
+                lostPosts,
+                key = { it.id },
+            ) { pet ->
+                PostCard(
+                    pet = pet,
+                    onClick = {
+                        navController.navigate("pet_detail/${pet.id}")
+                    },
+                )
+            }
         }
     }
-    }
 }
-

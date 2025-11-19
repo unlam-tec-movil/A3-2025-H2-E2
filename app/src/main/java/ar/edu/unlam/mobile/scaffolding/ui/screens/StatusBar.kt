@@ -12,7 +12,7 @@ fun StatusBar() {
     SideEffect {
         systemUiController.setStatusBarColor(
             color = ColorTwo,
-            darkIcons = false
+            darkIcons = false,
         )
     }
 }

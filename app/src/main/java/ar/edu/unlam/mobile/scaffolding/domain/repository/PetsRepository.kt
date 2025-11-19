@@ -32,5 +32,4 @@ interface PetsRepository {
      * Borra una mascota por su ID.
      */
     suspend fun deletePet(petId: String)
-
 }

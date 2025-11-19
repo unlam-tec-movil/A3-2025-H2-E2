@@ -35,7 +35,6 @@ fun PostCard(
     pet: Pet,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-
 ) {
     Card(
         onClick = onClick,
@@ -74,11 +73,12 @@ fun PostCard(
                 horizontalAlignment = Alignment.Start,
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 2.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = pet.name,
@@ -88,7 +88,7 @@ fun PostCard(
                     Text(
                         text = tiempoDePublicacionDelPost(pet.timestamp),
                         fontSize = 12.sp,
-                        color = Color.Gray
+                        color = Color.Gray,
                     )
                 }
                 Row(

@@ -1,6 +1,5 @@
 package ar.edu.unlam.mobile.scaffolding.util
 
-
 fun tiempoDePublicacionDelPost(timestamp: Long): String {
     val now = System.currentTimeMillis()
 
@@ -15,9 +14,9 @@ fun tiempoDePublicacionDelPost(timestamp: Long): String {
 
     return when {
         seconds < 60 -> "Ahora"
-        minutes < 60 -> "${minutes} min"
-        hours < 24 -> "${hours} hora(s)"
-        days < 7 -> "${days} día(s)"
+        minutes < 60 -> "$minutes min"
+        hours < 24 -> "$hours hora(s)"
+        days < 7 -> "$days día(s)"
         else -> {
             val date = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
             "el ${date.format(java.util.Date(timestamp))}"

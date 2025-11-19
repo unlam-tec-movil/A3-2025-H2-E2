@@ -52,7 +52,8 @@ const val MAP_ROUTE = "map"
 @Composable
 fun MapScreen(
     viewModel: MapViewModel = hiltViewModel(),
-    navController: NavController,) {
+    navController: NavController,
+) {
     val context = LocalContext.current
     val markerIcons = remember { mutableStateMapOf<String, BitmapDescriptor>() }
 
@@ -155,7 +156,7 @@ fun MapScreen(
                         icon = markerIcons[pet.id],
                         onClick = {
                             navController.navigate("pet_detail/${pet.id}")
-                            true   // al devolver true evita q la cámara haga zoom automático
+                            true // al devolver true evita q la cámara haga zoom automático
                         },
                         anchor = Offset(0.5f, 0.5f),
                         title = pet.name.ifBlank { "Mascota" },
