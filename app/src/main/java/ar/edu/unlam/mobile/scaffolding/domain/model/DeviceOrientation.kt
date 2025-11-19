@@ -2,8 +2,14 @@ package ar.edu.unlam.mobile.scaffolding.domain.model
 
 /**
  * Este modelo representa la orientación del dispositivo.
- * Utiliza sensores (magnetómetro + acelerómetro)
- * para determinar hacia dónde apunta el móvil.
+ *
+ * Utiliza TYPE_ROTATION_VECTOR, un sensor de fusión que combina:
+ * - Acelerómetro (referencia de gravedad)
+ * - Magnetómetro (referencia del norte magnético)
+ * - Giroscopio (cambios de rotación precisos)
+ *
+ * Esto proporciona mayor precisión y estabilidad que usar
+ * sensores individuales por separado.
  *
  * La propiedad azimuth es el ángulo en grados medido desde el norte en sentido horario.
  * - 0° = Norte

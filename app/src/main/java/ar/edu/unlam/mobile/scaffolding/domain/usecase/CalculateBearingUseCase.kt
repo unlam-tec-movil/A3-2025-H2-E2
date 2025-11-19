@@ -6,8 +6,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 /**
- * Caso de uso que calcula el ángulo/rumbo desde una ubicación origen
- * hacia una ubicación destino.
+ * Caso de uso que calcula el ángulo/rumbo desde una ubicación origen (del usuario)
+ * hacia una ubicación destino (de la mascota).
  *
  * Lo que se calcula es el "bearing", que es el ángulo en grados (0-360) medido desde el Norte en sentido horario:
  * - 0° = Norte
@@ -22,7 +22,7 @@ class CalculateBearingUseCase
     @Inject
     constructor() {
         /**
-         * Calcula el bearing desde la ubicación del usuario hacia la ubicación de la mascota.
+         * Calcula el bearing (ángulo) desde la ubicación del usuario hacia la ubicación de la mascota.
          *
          * Usa la fórmula de "bearing esférico" que tiene en cuenta
          * la curvatura de la Tierra.

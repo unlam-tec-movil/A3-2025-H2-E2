@@ -1,5 +1,6 @@
 package ar.edu.unlam.mobile.scaffolding.ui.screens.search
 
+import android.hardware.GeomagneticField
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -167,11 +168,19 @@ class SearchViewModel
                 locationRepository
                     .getLocationUpdates()
                     .onEach { userLocation ->
+                        // Calcular la declinación magnética para esta ubicación
+                        val declination =
+                            calculateMagneticDeclination(
+                                userLocation.latitude,
+                                userLocation.longitude,
+                            )
+
                         // Por cada nueva ubicación, actualizar el estado
                         _uiState.update {
                             it.copy(
                                 userLocation = userLocation,
                                 isLoadingLocation = false,
+                                magneticDeclination = declination,
                             )
                         }
 
@@ -221,6 +230,40 @@ class SearchViewModel
 
             // Actualizar el estado con el bearing calculado
             _uiState.update { it.copy(bearingTowardsPet = bearing) }
+        }
+
+        /**
+         * Calcula la declinación magnética para una ubicación dada.
+         *
+         * La declinación magnética es la diferencia entre el Norte Magnético
+         * (al que apunta el sensor/brújula) y el Norte Verdadero (geográfico).
+         *
+         * Esta corrección es necesaria porque:
+         * - El sensor devuelve el azimut respecto al Norte Magnético
+         * - El bearing geográfico usa el Norte Verdadero
+         * - Sin corrección, la flecha apuntaría con un error de varios grados
+         *
+         * @param latitude Latitud en grados decimales
+         * @param longitude Longitud en grados decimales
+         * @return Declinación magnética en grados (positivo = Este, negativo = Oeste)
+         */
+        private fun calculateMagneticDeclination(
+            latitude: Double,
+            longitude: Double,
+        ): Float {
+            // GeomagneticField calcula el campo magnético terrestre para una ubicación
+            val geomagneticField =
+                GeomagneticField(
+                    latitude.toFloat(),
+                    longitude.toFloat(),
+                    0f, // Altitud en metros (usamos 0 como aproximación)
+                    System.currentTimeMillis(), // Tiempo actual
+                )
+
+            // getDeclination() devuelve la declinación en grados
+            // Positivo = Norte Magnético está al Este del Norte Verdadero
+            // Negativo = Norte Magnético está al Oeste del Norte Verdadero
+            return geomagneticField.declination
         }
 
         /**
