@@ -10,7 +10,7 @@ import kotlin.math.abs
 /**
  * Estado de la UI para la pantalla de búsqueda de mascotas.
  *
- * Contiene toda la información necesaria para renderizar la pantalla:
+ * Contiene:
  * - Ubicación del usuario
  * - Información de la mascota buscada
  * - Modo de búsqueda activo (Ruta o Radar)
@@ -69,9 +69,22 @@ data class SearchUiState(
      * Indica si se está cargando la ruta desde Google Directions API.
      */
     val isLoadingRoute: Boolean = false,
+    /**
+     * Declinación magnética en grados para la ubicación actual.
+     *
+     * Es la diferencia entre el Norte Magnético (al que apunta el sensor magnetómetro)
+     * y el Norte Verdadero-Geográfico (al que apunta el bearing geográfico).
+     *
+     * Se usa para corregir el azimut del sensor y que la flecha apunte
+     * con precisión hacia la mascota.
+     *
+     * Valores positivos = Norte Magnético está al Este del Norte Verdadero
+     * Valores negativos = Norte Magnético está al Oeste del Norte Verdadero
+     */
+    val magneticDeclination: Float = 0f,
 ) {
     /**
-     * Propiedad computada: ¿Está todo listo para mostrar el radar/mapa?
+     * Propiedad computada:
      *
      * Se considera listo cuando:
      * - Tenemos la ubicación del usuario
@@ -87,13 +100,18 @@ data class SearchUiState(
      * La flecha debe apuntar hacia la mascota, considerando hacia dónde
      * está orientado el dispositivo.
      *
-     * Fórmula: rotación = bearing - azimut
+     * Fórmula: rotación = bearing - (azimut + declinación magnética)
+     *
+     * El bearing usa el Norte Verdadero (geográfico), mientras que el
+     * azimut del sensor usa el Norte Magnético. La declinación magnética
+     * corrige esta diferencia para que la flecha apunte con precisión.
      *
      * Ejemplo:
-     * - Bearing hacia mascota: 90° (este)
-     * - Azimut del dispositivo: 45° (noreste)
-     * - Rotación de flecha: 90° - 45° = 45°
-     *   (la flecha rota 45° desde la dirección del teléfono)
+     * - Bearing hacia mascota: 90° (este, Norte Verdadero)
+     * - Azimut del dispositivo: 45° (Norte Magnético)
+     * - Declinación magnética: -5° (Buenos Aires aprox.)
+     * - Azimut corregido: 45° + (-5°) = 40° (Norte Verdadero)
+     * - Rotación de flecha: 90° - 40° = 50°
      *
      * @return Ángulo de rotación en grados, o null si no hay datos suficientes.
      */
@@ -106,8 +124,14 @@ data class SearchUiState(
             val bearing = bearingTowardsPet ?: return null
             val azimuth = deviceOrientation?.azimuth ?: return null
 
+            // Corregir el azimut magnético al Norte Verdadero
+            val correctedAzimuth = azimuth + magneticDeclination
+
             // Calcular la rotación
-            var rotation = bearing - azimuth
+            // La fórmula es (azimut - bearing) porque la flecha debe "compensar"
+            // la rotación del celular, como una brújula real donde la aguja
+            // siempre apunta al Norte sin importar cómo gires el dispositivo.
+            var rotation = correctedAzimuth - bearing
 
             // Normalizar a -180 a 180 (para rotaciones más naturales)
             // Ejemplo: en lugar de rotar 270°, es mejor rotar -90°
@@ -121,7 +145,7 @@ data class SearchUiState(
         }
 
     /**
-     * Propiedad computada: ¿Está el usuario apuntando correctamente hacia la mascota?
+     * Propiedad computada:
      *
      * Indica si el dispositivo está orientado hacia la dirección de la mascota
      * dentro de un rango de tolerancia (±20 grados).

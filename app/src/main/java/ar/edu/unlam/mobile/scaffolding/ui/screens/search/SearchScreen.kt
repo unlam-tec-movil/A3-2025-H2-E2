@@ -24,10 +24,14 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -248,18 +252,23 @@ fun SearchScreen(
                 ),
         ) {
             // ===== MARKER DE LA MASCOTA =====
+            // Usamos key(pet.id) para estabilizar el marker y evitar parpadeo.
+            // Sin el key, cada recomposición (por sensor/GPS) recrea el marker.
+            // Con el key, Compose reutiliza el marker mientras el ID no cambie.
             uiState.pet?.let { pet ->
-                val markerState =
-                    rememberMarkerState(
-                        position = LatLng(pet.latitude, pet.longitude),
-                    )
+                key(pet.id) {
+                    val markerState =
+                        rememberMarkerState(
+                            position = LatLng(pet.latitude, pet.longitude),
+                        )
 
-                Marker(
-                    state = markerState,
-                    title = pet.name,
-                    snippet = "Mascota perdida",
-                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED),
-                )
+                    Marker(
+                        state = markerState,
+                        title = pet.name,
+                        snippet = "Mascota perdida",
+                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED),
+                    )
+                }
             }
 
             // ===== POLYLINE DE LA RUTA (modo ROUTE) =====
@@ -367,11 +376,10 @@ fun SearchScreen(
 }
 
 /**
- * Componente de flecha para modo RADAR (HUD).
- * Componente que solo renderiza según el estado recibido.
+ * Componente de flecha para modo RADAR.
  *
  * Aparece fija en el centro de la pantalla.
- * Rota para apuntar hacia la mascota relativo a la orientación del dispositivo.
+ * Rota sobre su eje para apuntar hacia la mascota relativo a la orientación del dispositivo.
  * Cambia de color según la alineación (calculada por el UiState):
  * - VERDE: Usuario apuntando correctamente hacia la mascota
  * - ROJA: Usuario debe seguir buscando la dirección
@@ -386,12 +394,24 @@ fun RadarArrow(
     isPointingCorrectly: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    // Animación suave con spring para movimiento natural
+    // Spring es mejor que tween porque responde bien a cambios rápidos
+    // sin necesidad de esperar que termine la animación anterior
+    val animatedRotation by animateFloatAsState(
+        targetValue = rotation,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow,
+        ),
+        label = "arrow_rotation",
+    )
+
     // Elegir la flecha según el estado recibido (sin calcular nada)
     val arrowResource =
         if (isPointingCorrectly) {
-            R.drawable.flecha_verde // ¡Perfecto! Camina hacia adelante
+            R.drawable.flecha_verde // Dirección correcta, caminar hacia adelante
         } else {
-            R.drawable.flecha_roja // Sigue girando para encontrar la dirección
+            R.drawable.flecha_roja // Sigue girando para encontrar la dirección de la mascota
         }
 
     Box(
@@ -410,6 +430,7 @@ fun RadarArrow(
         )
 
         // Flecha PNG rotada (roja o verde según alineación)
+        // Usa animatedRotation para movimiento suave
         Image(
             painter = painterResource(arrowResource),
             contentDescription =
@@ -421,7 +442,7 @@ fun RadarArrow(
             modifier =
                 Modifier
                     .size(60.dp)
-                    .rotate(rotation), // Rotación relativa al dispositivo
+                    .rotate(animatedRotation), // Rotación animada suavemente
         )
     }
 }
