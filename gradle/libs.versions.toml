@@ -36,8 +36,6 @@ coilCompose = "2.6.0"
 accompanistPermissions = "0.34.0"
 uiText = "1.9.4"
 
-
-
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }

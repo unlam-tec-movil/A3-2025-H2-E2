@@ -86,7 +86,7 @@ fun PostFoundPet(
                         ) {
                             val pet =
                                 Pet(
-                                    name = "",
+                                    name = "PERDIDO",
                                     seenAt = seenAt,
                                     locality = locality,
                                     gender = selectedGender!!,
