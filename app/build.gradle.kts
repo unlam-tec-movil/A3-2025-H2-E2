@@ -34,7 +34,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "ar.edu.unlam.mobile.scaffolding.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -82,6 +82,18 @@ android {
     }
 }
 
+// Fuerza a todas las librerías a usar versiones compatibles
+configurations.all {
+    resolutionStrategy {
+        force("androidx.test:core:1.5.0")
+        force("androidx.test:runner:1.5.0")
+        force("androidx.test:rules:1.5.0")
+        force("androidx.test:storage:1.4.0")
+        force("androidx.test:monitor:1.6.1")
+        force("androidx.test.espresso:espresso-core:3.5.1")
+    }
+}
+
 dependencies {
     // Base Compose
     implementation(libs.androidx.core.ktx)
@@ -100,6 +112,8 @@ dependencies {
 
     // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -107,11 +121,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Hilt Testing
+    kspAndroidTest(libs.google.dagger.hilt.android.compiler)
+
     // Dagger + Hilt
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.androidx.compose.ui.text)
     ksp(libs.google.dagger.hilt.android.compiler)
-    implementation(libs.google.dagger.hilt.android.testing)
     implementation(libs.androidx.hilt.navigation.compose)
     androidTestImplementation(libs.google.dagger.hilt.android.testing)
     testImplementation(libs.google.dagger.hilt.android.testing)
@@ -130,19 +146,11 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
 
-    // Google Maps y Fused Location
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.android.gms:play-services-location:17.0.0")
-
-    // Maps Compose
-    implementation("com.google.maps.android:maps-compose:6.1.0")
-
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation(libs.kotlinx.serialization.json)
 
     // Coil
-    implementation("io.coil-kt:coil-compose:2.6.0")
     implementation(libs.coil.compose)
 
     // Splash
@@ -165,4 +173,6 @@ dependencies {
 
     // Google Maps Utils (para decodificar polylines)
     implementation(libs.maps.utils)
+
+    testImplementation(kotlin("test"))
 }
