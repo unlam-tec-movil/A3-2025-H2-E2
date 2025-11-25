@@ -308,7 +308,7 @@ fun PetDetailScreen(
 }
 
 @Composable
-private fun DetailRow(
+fun DetailRow(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
