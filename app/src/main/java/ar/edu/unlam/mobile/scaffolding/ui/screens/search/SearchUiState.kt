@@ -128,10 +128,10 @@ data class SearchUiState(
             val correctedAzimuth = azimuth + magneticDeclination
 
             // Calcular la rotación
-            // La fórmula es (azimut - bearing) porque la flecha debe "compensar"
+            // La fórmula es (bearing - azimut) porque la flecha debe "compensar"
             // la rotación del celular, como una brújula real donde la aguja
-            // siempre apunta al Norte sin importar cómo gires el dispositivo.
-            var rotation = correctedAzimuth - bearing
+            // siempre apunta a la mascota sin importar cómo se gira el dispositivo físico.
+            var rotation = bearing - correctedAzimuth
 
             // Normalizar a -180 a 180 (para rotaciones más naturales)
             // Ejemplo: en lugar de rotar 270°, es mejor rotar -90°
