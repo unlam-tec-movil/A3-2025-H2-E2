@@ -19,7 +19,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class SearchViewModelTest {
-
     // Aplicar MainDispatcherRule
     // Esto configura el hilo Main automáticamente antes de cada test
     @get:Rule
@@ -42,35 +41,41 @@ class SearchViewModelTest {
     @Before
     fun setUp() {
         // Inicializamos el ViewModel inyectándole los mocks
-        viewModel = SearchViewModel(
-            locationRepository,
-            sensorRepository,
-            routeRepository,
-            calculateBearingUseCase,
-            petsRepository,
-            savedStateHandle
-        )
+        viewModel =
+            SearchViewModel(
+                locationRepository,
+                sensorRepository,
+                routeRepository,
+                calculateBearingUseCase,
+                petsRepository,
+                savedStateHandle,
+            )
     }
 
     @Test
-    fun `al cambiar a modo RADAR, el uiState debe actualizar la orientacion cuando el sensor emite datos`() = runTest {
-        // ARRANGE (Preparar)
-        // Simulamos un dato que vendría del sensor (ejemplo: 90 grados)
-        val orientacionSimulada = DeviceOrientation(azimuth = 90f)
+    fun `al cambiar a modo RADAR, el uiState debe actualizar la orientacion cuando el sensor emite datos`() =
+        runTest {
+            // ARRANGE (Preparar)
+            // Simulamos un dato que vendría del sensor (ejemplo: 90 grados)
+            val orientacionSimulada = DeviceOrientation(azimuth = 90f)
 
-        // Enseñamos al mock: "Cuando te pidan la orientación, devolvé un Flow con este dato"
-        every { sensorRepository.getDeviceOrientation() } returns flowOf(orientacionSimulada)
+            // Enseñamos al mock: "Cuando te pidan la orientación, devolvé un Flow con este dato"
+            every { sensorRepository.getDeviceOrientation() } returns flowOf(orientacionSimulada)
 
-        // ACT (Ejecutar)
-        // El usuario toca el botón "Radar"
-        viewModel.onSearchModeChanged(SearchMode.RADAR)
+            // ACT (Ejecutar)
+            // El usuario toca el botón "Radar"
+            viewModel.onSearchModeChanged(SearchMode.RADAR)
 
-        // ASSERT (Verificar)
-        // El modo debe haber cambiado
-        assertEquals(SearchMode.RADAR, viewModel.uiState.value.searchMode)
+            // ASSERT (Verificar)
+            // El modo debe haber cambiado
+            assertEquals(SearchMode.RADAR, viewModel.uiState.value.searchMode)
 
-        // La orientación en el estado debe coincidir con la del sensor (90 grados)
-        // Esto confirma que el ViewModel se suscribió correctamente al Flow
-        assertEquals(90f, viewModel.uiState.value.deviceOrientation?.azimuth)
-    }
+            // La orientación en el estado debe coincidir con la del sensor (90 grados)
+            // Esto confirma que el ViewModel se suscribió correctamente al Flow
+            assertEquals(
+                90f,
+                viewModel.uiState.value.deviceOrientation
+                    ?.azimuth,
+            )
+        }
 }

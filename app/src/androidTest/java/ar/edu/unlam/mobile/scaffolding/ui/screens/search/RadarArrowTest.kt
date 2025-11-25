@@ -7,7 +7,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class RadarArrowTest {
-
     // Regla de Compose para interactuar con la UI
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -19,7 +18,7 @@ class RadarArrowTest {
         composeTestRule.setContent {
             RadarArrow(
                 rotation = 0f,
-                isPointingCorrectly = true // Caso de éxito (color verde)
+                isPointingCorrectly = true, // Caso de éxito (color verde)
             )
         }
 
@@ -36,7 +35,7 @@ class RadarArrowTest {
         composeTestRule.setContent {
             RadarArrow(
                 rotation = 45f,
-                isPointingCorrectly = false // Caso de búsqueda (color rojo)
+                isPointingCorrectly = false, // Caso de búsqueda (color rojo)
             )
         }
 

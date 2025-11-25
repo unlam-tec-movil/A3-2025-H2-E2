@@ -18,9 +18,8 @@ import org.junit.runner.Description
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainDispatcherRule(
-    private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
+    private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
 ) : TestWatcher() {
-
     /**
      * Se ejecuta ANTES de cada test.
      * Reemplaza Dispatchers.Main con el TestDispatcher.
