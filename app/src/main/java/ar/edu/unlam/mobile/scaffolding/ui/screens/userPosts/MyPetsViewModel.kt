@@ -43,7 +43,6 @@ class MyPetsViewModel
         init {
             viewModelScope.launch {
                 val user = userRepository.getCurrentUser()
-                Log.d("MyPetsVM", "Usuario: $user")
 
                 if (user != null && user.postIds.isNotEmpty()) {
                     // Ahora la UI trabaja directamente con modelos del dominio

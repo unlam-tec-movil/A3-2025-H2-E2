@@ -196,7 +196,6 @@ class PostViewModel
 
                     onSuccessMessage("Mascota registrada con éxito")
                 } catch (e: Exception) {
-                    Log.e("PostViewModel", "Error guardando mascota: ${e.message}")
                 } finally {
                     _isSaving.value = false // desactiva el loading
                 }
