@@ -33,7 +33,7 @@ fun FloatingParticlesBackgroundAnimated(
     particleCount: Int = 25,
     excludeTopPx: Float = 0f,
 ) {
-    val random = remember { Random(1234) } // Semilla fija para test reproducible
+    val random = remember { Random(1234) } // Fijo para el test
 
     val particles =
         remember {
