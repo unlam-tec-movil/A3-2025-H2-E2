@@ -34,7 +34,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "ar.edu.unlam.mobile.scaffolding.CustomTestRunner"
+        // Runner para tests instrumentados (Compose UI Test necesita AndroidJUnitRunner)
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -109,30 +111,39 @@ dependencies {
 
     // 👇 Dependencia directa para ui-text
     implementation("androidx.compose.ui:ui-text:1.7.0")
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.compose.ui.test.junit4)
 
-    // Testing
+    // Testing Unitario (JVM)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(kotlin("test"))
+
+    // Testing Instrumentado (Android)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4") // 👈 NECESARIO para createComposeRule y onNodeWithTag
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation("androidx.compose.ui:ui-test-manifest") // 👈 NECESARIO para onNodeWithTag
 
     // Hilt Testing
     kspAndroidTest(libs.google.dagger.hilt.android.compiler)
+    androidTestImplementation(libs.google.dagger.hilt.android.testing)
+    testImplementation(libs.google.dagger.hilt.android.testing)
 
     // Dagger + Hilt
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.androidx.compose.ui.text)
     ksp(libs.google.dagger.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-    androidTestImplementation(libs.google.dagger.hilt.android.testing)
-    testImplementation(libs.google.dagger.hilt.android.testing)
+
+    // AndroidX
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.fragment.ktx)
+
+    // Corrutinas
     implementation(libs.kotlinx.coroutines.android)
 
     // Google Maps & Location
@@ -147,7 +158,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
 
     // DataStore
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
 
     // Coil
@@ -173,6 +184,4 @@ dependencies {
 
     // Google Maps Utils (para decodificar polylines)
     implementation(libs.maps.utils)
-
-    testImplementation(kotlin("test"))
 }

@@ -160,7 +160,7 @@ fun PostFoundPet(
                 Spacer(Modifier.height(16.dp))
 
                 // GÉNERO
-                foundPetGenderSelector(
+                FoundPetGenderSelector(
                     selectedGender = selectedGender,
                     onGenderSelected = { selectedGender = it },
                 )
@@ -192,7 +192,7 @@ fun PostFoundPet(
 }
 
 @Composable
-fun foundPetGenderSelector(
+fun FoundPetGenderSelector(
     selectedGender: Gender?,
     onGenderSelected: (Gender) -> Unit,
 ) {

@@ -13,9 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import kotlin.random.Random
 
-private data class Particle(
+data class Particle(
     val id: Int,
     val radius: Float,
     val color: Color,
@@ -32,24 +33,15 @@ fun FloatingParticlesBackgroundAnimated(
     particleCount: Int = 25,
     excludeTopPx: Float = 0f,
 ) {
-    val random = remember { Random(System.currentTimeMillis()) }
+    val random = remember { Random(1234) } // Semilla fija para test reproducible
 
-    // partículas con posiciones base aleatorias y tamaños más grandes
     val particles =
         remember {
             List(particleCount) { i ->
                 Particle(
                     id = i,
-                    radius = random.nextInt(10, 22).toFloat(), // 🔹 tamaño más visible
-                    color =
-                        Color(0xFFD81B60).copy(
-                            alpha =
-                                listOf(
-                                    0.12f,
-                                    0.18f,
-                                    0.25f,
-                                ).random(random),
-                        ),
+                    radius = random.nextInt(10, 22).toFloat(),
+                    color = Color(0xFFD81B60).copy(alpha = listOf(0.12f, 0.18f, 0.25f).random(random)),
                     baseX = random.nextFloat(),
                     baseY = random.nextFloat(),
                     speedX = random.nextInt(4000, 8000),
@@ -61,7 +53,6 @@ fun FloatingParticlesBackgroundAnimated(
 
     val transition = rememberInfiniteTransition(label = "particles")
 
-    // Animaciones de posición y pulso (tamaño variable)
     val animatedStates =
         particles.map { p ->
             val xAnim =
@@ -103,16 +94,14 @@ fun FloatingParticlesBackgroundAnimated(
             Triple(xAnim, yAnim, pulse)
         }
 
-    Canvas(modifier = modifier) {
+    Canvas(modifier = modifier.testTag("particles_canvas")) {
         val width = size.width
         val height = size.height - excludeTopPx
 
         particles.forEachIndexed { i, p ->
             val (xAnim, yAnim, pulse) = animatedStates[i]
             val x = (p.baseX + (xAnim.value - 0.5f) * 0.6f).coerceIn(0f, 1f) * width
-            val y =
-                excludeTopPx + (p.baseY + (yAnim.value - 0.5f) * 0.6f)
-                    .coerceIn(0f, 1f) * height
+            val y = excludeTopPx + (p.baseY + (yAnim.value - 0.5f) * 0.6f).coerceIn(0f, 1f) * height
 
             drawCircle(
                 color = p.color,
