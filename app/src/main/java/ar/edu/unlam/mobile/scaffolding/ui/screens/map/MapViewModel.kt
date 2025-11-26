@@ -1,5 +1,9 @@
 package ar.edu.unlam.mobile.scaffolding.ui.screens.map
 
+import android.util.Log
+import android.util.Log.e
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.edu.unlam.mobile.scaffolding.domain.model.Pet
@@ -107,9 +111,7 @@ class MapViewModel
                         _currentLocation.value = userLocation
                     }.onFailure { exception ->
                         _currentLocation.value = null
-
-                        // TODO: Emitir evento para mostrar Snackbar con mensaje de error
-                        // Por ejemplo: "No se pudo obtener la ubicación."
+                        e("PostViewModel", "No se pudo obtener la ubicación: ${exception.message}")
                     }
 
                 // 4. Indica que terminó la carga

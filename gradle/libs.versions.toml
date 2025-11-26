@@ -4,6 +4,7 @@ activityKtx = "1.11.0"
 agp = "8.9.2"
 coreSplashscreen = "1.2.0"
 coreSplashscreenVersion = "1.0.1"
+coreTesting = "2.2.0"
 firebaseBom = "34.5.0"
 fragmentKtx = "1.8.9"
 kotlin = "2.2.10"
@@ -12,8 +13,10 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.5.1"
 kotlinxCoroutinesAndroid = "1.9.0"
+kotlinxCoroutinesTest = "1.8.0"
 kotlinxSerializationJson = "1.7.3"
 gson = "2.13.2"
+mockitoCore = "5.20.0"
 retrofit = "3.0.0"
 okhttp = "5.3.1"
 mapsUtils = "3.19.1"
@@ -43,6 +46,7 @@ androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-core-splashscreen-v101 = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreenVersion" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -52,6 +56,8 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-test-storage = { group = "androidx.test", name = "storage", version = "1.4.0" }
+kotlinx-coroutines-test-v180 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }

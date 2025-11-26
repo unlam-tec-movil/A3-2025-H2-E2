@@ -121,6 +121,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //TestMock
+    testImplementation(kotlin("test"))
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.androidx.core.testing)
+
     // Hilt Testing
     kspAndroidTest(libs.google.dagger.hilt.android.compiler)
 
@@ -174,5 +179,5 @@ dependencies {
     // Google Maps Utils (para decodificar polylines)
     implementation(libs.maps.utils)
 
-    testImplementation(kotlin("test"))
+
 }
