@@ -1,0 +1,22 @@
+package ar.edu.unlam.mobile.scaffolding.domain.model
+
+/**
+ * Este modelo representa la orientación del dispositivo.
+ *
+ * Utiliza TYPE_ROTATION_VECTOR, un sensor de fusión que combina:
+ * - Acelerómetro (referencia de gravedad)
+ * - Magnetómetro (referencia del norte magnético)
+ * - Giroscopio (cambios de rotación precisos)
+ *
+ * Esto proporciona mayor precisión y estabilidad que usar
+ * sensores individuales por separado.
+ *
+ * La propiedad azimuth es el ángulo en grados medido desde el norte en sentido horario.
+ * - 0° = Norte
+ * - 90° = Este
+ * - 180° = Sur
+ * - 270° = Oeste
+ */
+data class DeviceOrientation(
+    val azimuth: Float,
+)

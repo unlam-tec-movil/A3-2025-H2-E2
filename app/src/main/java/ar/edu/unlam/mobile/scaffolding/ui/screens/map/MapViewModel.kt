@@ -1,67 +1,119 @@
 package ar.edu.unlam.mobile.scaffolding.ui.screens.map
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
-import ar.edu.unlam.mobile.scaffolding.data.models.PlacePin
+import androidx.lifecycle.viewModelScope
+import ar.edu.unlam.mobile.scaffolding.domain.model.Pet
+import ar.edu.unlam.mobile.scaffolding.domain.model.UserLocation
+import ar.edu.unlam.mobile.scaffolding.domain.repository.LocationRepository
+import ar.edu.unlam.mobile.scaffolding.domain.repository.PetsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel para MapScreen (mapa principal con todas las mascotas).
+ *
+ * Responsabilidad:
+ * - Gestionar la ubicación actual del usuario
+ * - Cargar y exponer la lista de todas las mascotas (Pet) para mostrar en el mapa
+ */
 @HiltViewModel
 class MapViewModel
     @Inject
-    constructor() : ViewModel() {
-        private val _pins = MutableStateFlow<List<PlacePin>>(emptyList())
-        val pins: StateFlow<List<PlacePin>> = _pins
+    constructor(
+        private val locationRepository: LocationRepository,
+        private val petsRepository: PetsRepository,
+    ) : ViewModel() {
+        // ===== ESTADO DE MASCOTAS =====
 
-        fun setAll(pins: List<PlacePin>?) {
-            if (pins != null) {
-                _pins.value = pins
+        /**
+         * Lista de todas las mascotas (Pet) para mostrar en el mapa.
+         * Trabaja con el modelo Pet del DOMINIO.
+         */
+        private val _pets = MutableStateFlow<List<Pet>>(emptyList())
+        val pets: StateFlow<List<Pet>> = _pets
+
+        /**
+         * Indica si se están cargando las mascotas.
+         */
+        private val _isLoadingPets = MutableStateFlow(false)
+        val isLoadingPets: StateFlow<Boolean> = _isLoadingPets
+
+        init {
+            loadPets()
+        }
+
+        /**
+         * Carga todas las mascotas desde el repositorio.
+         */
+        private fun loadPets() {
+            viewModelScope.launch {
+                _isLoadingPets.value = true
+
+                // Observar el Flow de mascotas desde el repositorio
+                petsRepository.getAllPets().collect { petList ->
+                    _pets.value = petList
+                    _isLoadingPets.value = false
+                }
             }
         }
+        // ===== ESTADO DE UBICACIÓN =====
 
-        fun load(context: Context): List<PlacePin>? = null
+        /**
+         * Ubicación actual del usuario.
+         * null: aún no se cargó o falló.
+         * UserLocation: Coordenadas obtenidas con éxito.
+         */
+        private val _currentLocation = MutableStateFlow<UserLocation?>(null)
+        val currentLocation: StateFlow<UserLocation?> = _currentLocation
 
-        // estado para “nuevo pin” al hacer long press
-        private val _pendingLatLng = MutableStateFlow<com.google.android.gms.maps.model.LatLng?>(null)
+        // ===== ESTADO DE PERMISOS =====
 
-        val pendingLatLng: StateFlow<com.google.android.gms.maps.model.LatLng?> = _pendingLatLng
+        /**
+         * Estado del permiso de ubicación.
+         * true: usuario concedió el permiso / false: usuario no concedió el permiso.
+         */
+        private val _hasLocationPermission = MutableStateFlow(false)
+        val hasLocationPermission: StateFlow<Boolean> = _hasLocationPermission
 
-        fun askAddAt(latLng: com.google.android.gms.maps.model.LatLng) {
-            _pendingLatLng.value = latLng
+        // ===== ESTADO DE LOADING =====
+
+        /**
+         * Indica si se está cargando la ubicación.
+         * true: petición en curso / false: 'Idle' puede ser éxito o error
+         */
+        private val _isLoadingLocation = MutableStateFlow(false)
+        val isLoadingLocation: StateFlow<Boolean> = _isLoadingLocation
+
+        // Actualiza el estado del permiso de ubicación.
+        fun onLocationPermissionChanged(granted: Boolean) {
+            _hasLocationPermission.value = granted
         }
 
-        fun confirmAdd(
-            title: String,
-            snippet: String?,
-        ) {
-            val pos = _pendingLatLng.value ?: return
-            _pins.value = _pins.value +
-                PlacePin(
-                    lat = pos.latitude,
-                    lng = pos.longitude,
-                    title = title,
-                    snippet = snippet,
-                )
-            _pendingLatLng.value = null
-        }
+        // Carga la ubicación actual del usuario.
+        fun loadCurrentLocation() {
+            viewModelScope.launch {
+                // 1. Indica que está cargando
+                _isLoadingLocation.value = true
 
-        fun cancelAdd() {
-            _pendingLatLng.value = null
-        }
+                // 2. Llama al repositorio (capa de dominio)
+                val result = locationRepository.getCurrentLocation()
 
-        fun removePin(id: String) {
-            _pins.value = _pins.value.filterNot { it.id == id }
-        }
+                // 3. Maneja el resultado
+                result
+                    .onSuccess { userLocation ->
+                        _currentLocation.value = userLocation
+                    }.onFailure { exception ->
+                        _currentLocation.value = null
 
-        fun movePin(
-            id: String,
-            newPos: com.google.android.gms.maps.model.LatLng,
-        ) {
-            _pins.value =
-                _pins.value.map {
-                    if (it.id == id) it.copy(lat = newPos.latitude, lng = newPos.longitude) else it
-                }
+                        // TODO: Emitir evento para mostrar Snackbar con mensaje de error
+                        // Por ejemplo: "No se pudo obtener la ubicación."
+                    }
+
+                // 4. Indica que terminó la carga
+                _isLoadingLocation.value = false
+            }
         }
     }
